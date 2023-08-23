@@ -14,16 +14,21 @@ const Article = () => {
   const { name } = useParams();
   const article = articleContent.find((article) => article.name === name);
   const [articleInfo, setArticleInfo] = useState({ comments: [] });
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const result = await fetch(`/api/articles/${name}`);
+  console.log(name)
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const result = await fetch(`http://127.0.0.1:8000/api/articles/${name}`);
       const body = await result.json();
-      console.log(body);
-      setArticleInfo(body);
-    };
-    fetchData();
-  }, [name]);
+      setArticleInfo(body.comments);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+  fetchData();
+}, [name]);
+
 
   if (!article) return <NotFound />;
   const otherArticles = articleContent.filter(
